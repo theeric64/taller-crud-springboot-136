@@ -49,7 +49,7 @@ public class UserController {
         this.users.add(user);
         return ResponseEntity.status(201).body(user);
     }
-
+    // add put
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User updatedUser) {
         for (User user : users) {
