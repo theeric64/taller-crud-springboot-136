@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +34,6 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
-
         for (User user : users) {
             if (user.getId().equals(id)) {
                 return ResponseEntity
@@ -40,10 +41,7 @@ public class UserController {
                         .body(user);
             }
         }
-
-        return ResponseEntity
-                .status(404)
-                .build();
+        return ResponseEntity.status(404).build();
     }
 
     @PostMapping
@@ -51,5 +49,31 @@ public class UserController {
         this.users.add(user);
         return ResponseEntity.status(201).body(user);
     }
+    // add put
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User updatedUser) {
+        for (User user : users) {
+            if (user.getId().equals(id)) {
+                user.setName(updatedUser.getName());
+                user.setEmail(updatedUser.getEmail());
+                user.setAge(updatedUser.getAge());
+                user.setPhone(updatedUser.getPhone());
+                
+                return ResponseEntity.ok(user);
+            }
+        }
+        return ResponseEntity.status(404).build();
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+        boolean removed = users.removeIf(user -> user.getId().equals(id));
+        
+        if (removed) {
+            return ResponseEntity.noContent().build(); 
+        }
+        
+        
+        return ResponseEntity.status(404).build();
+    }
 }
